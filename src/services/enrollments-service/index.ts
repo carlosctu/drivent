@@ -17,7 +17,7 @@ async function getAddressFromCEP(cep: string) {
     logradouro: result.data.logradouro,
     bairro: result.data.bairro,
     complemento: result.data.complemento,
-    localidade: result.data.localidade,
+    cidade: result.data.localidade,
     uf: result.data.uf
   };
 
