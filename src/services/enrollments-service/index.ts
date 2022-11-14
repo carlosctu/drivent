@@ -9,10 +9,9 @@ import { Address, Enrollment } from "@prisma/client";
 async function getAddressFromCEP(cep: string) {
   const result = await request.get(`https://viacep.com.br/ws/${cep}/json/`);
   
-  if (!result.data) {
+  if (!result.data || result.data.erro) {
     throw notFoundError();
   }
-
   const addressFromCEP: ViaCEPAddress = {
     logradouro: result.data.logradouro,
     bairro: result.data.bairro,
@@ -20,7 +19,7 @@ async function getAddressFromCEP(cep: string) {
     cidade: result.data.localidade,
     uf: result.data.uf
   };
-
+  
   return addressFromCEP;
 }
 
