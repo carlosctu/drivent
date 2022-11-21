@@ -161,7 +161,7 @@ describe("POST /payments/process", () => {
       expect(response.status).toEqual(httpStatus.BAD_REQUEST);
     });
 
-    it("should respond with status 404 when given ticket doesnt exist", async () => {
+    it("should respond with status 401 when given ticket doesnt exist", async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       await createEnrollmentWithAddress(user);
@@ -170,7 +170,7 @@ describe("POST /payments/process", () => {
 
       const response = await server.post("/payments/process").set("Authorization", `Bearer ${token}`).send(body);
 
-      expect(response.status).toEqual(httpStatus.NOT_FOUND);
+      expect(response.status).toEqual(httpStatus.UNAUTHORIZED);
     });
 
     it("should respond with status 401 when user doesnt own given ticket", async () => {
