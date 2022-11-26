@@ -1,7 +1,7 @@
 {
   "name": "drint.t-back",
   "version": "1.0.0",
-  "description": "",
+  "description": "Back-end for Driven.t, an event management solution.",
   "main": "dist/index.js",
   "scripts": {
     "prebuild": "rm -rf dist",
@@ -14,13 +14,13 @@
     "lint:staged": "lint-staged",
     "test": "NODE_ENV=test jest --passWithNoTests --runInBand",
     "test:migration:run": "npm run test:load-envs prisma migrate deploy",
-    "test:migration:generate": "npm run test:load-envs prisma migrate dev",
     "test:watch": "jest --watch --passWithNoTests --runInBand",
     "test:load-envs": "dotenv -e .env.test",
+    "test:migration:generate": "npm run test:load-envs prisma migrate dev",
     "test:seed": "npm run test:load-envs prisma db seed",
     "dev:load-envs": "dotenv -e .env.development",
     "dev:migration:run": "npm run dev:load-envs prisma migrate deploy",
-    "dev:migration:generate": "npm run dev:compose -- drivent-development npm run dev:load-envs prisma migrate dev",
+    "dev:migration:generate": "npm run dev:load-envs prisma migrate dev",
     "dev:seed": "npm run dev:load-envs prisma db seed",
     "dev": "NODE_ENV=development nodemon --watch 'src/' --exec 'ts-node -r tsconfig-paths/register ./src/server.ts' -e ts"
   },
@@ -37,6 +37,9 @@
   "license": "ISC",
   "prisma": {
     "seed": "npm run dev:load-envs -- ts-node prisma/seed.ts"
+  },
+  "prettier": {
+    "singleQuote": false
   },
   "devDependencies": {
     "@faker-js/faker": "^6.3.1",
@@ -87,5 +90,16 @@
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
     "reflect-metadata": "^0.1.13"
-  }
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/carlosctu/drivent.git"
+  },
+  "bugs": {
+    "url": "https://github.com/carlosctu/drivent/issues"
+  },
+  "homepage": "https://github.com/carlosctu/drivent#readme"
 }
