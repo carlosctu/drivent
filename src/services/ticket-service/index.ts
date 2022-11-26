@@ -24,9 +24,16 @@ async function getAllUserTickets(userId: number) {
   return userTickets;
 }
 
+async function validateTicketWithHotel(userId: number) {
+  const ticket = await ticketRepository.findTicketWithHotel(userId);
+  if (!ticket) throw notFoundError();
+  return ticket;
+}
+
 const ticketService = {
   getAllTicketTypes,
   getAllUserTickets,
+  validateTicketWithHotel,
 };
 
 export default ticketService;

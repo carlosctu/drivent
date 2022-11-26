@@ -4,39 +4,29 @@ export type ApplicationError = {
 };
 
 export type ViaCEPAddress = {
-  logradouro: string;
-  complemento: string;
-  bairro: string;
-  cidade: string;
-  uf: string;
+  logradouro: string,
+  complemento: string,
+  bairro: string,
+  localidade: string,
+  uf: string,
+
 };
 
-export type PaymentEntity = {
-  id: number;
-  ticketId: number;
-  value: number;
-  cardIssuer: string;
-  cardLastDigits: string;
-  updatedAt: Date;
-};
+//Regra de Negócio
+export type AddressEnrollment = {
+  logradouro: string,
+  complemento: string,
+  bairro: string,
+  cidade: string,
+  uf: string,
+  error?: string
 
-export type Payment = Omit<PaymentEntity, "id">;
-
-export type PaymentProcess = {
-  ticketId: number;
-  cardData: {
-    issuer: string;
-    number: number;
-    name: string;
-    expirationDate: Date;
-    cvv: number;
-  };
-};
+}
 
 export type RequestError = {
-  status: number;
-  data: object | null;
-  statusText: string;
-  name: string;
-  message: string;
+  status: number,
+  data: object | null,
+  statusText: string,
+  name: string,
+  message: string,
 };

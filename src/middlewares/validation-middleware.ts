@@ -17,10 +17,11 @@ function validate(schema: ObjectSchema, type: "body" | "params") {
       abortEarly: false,
     });
 
-    if (error) {
-      return res.status(httpStatus.BAD_REQUEST).send(invalidDataError(error.details.map((d) => d.message)));
-    } 
-    next();
+    if (!error) {
+      next();
+    } else {
+      res.status(httpStatus.BAD_REQUEST).send(invalidDataError(error.details.map((d) => d.message)));
+    }
   };
 }
 
