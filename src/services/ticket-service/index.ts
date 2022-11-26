@@ -1,38 +1,59 @@
-import { notFoundError } from "@/errors";
-import { TicketType } from "@prisma/client";
+import { notFoundError, unauthorizedError } from "@/errors";
 import ticketRepository from "@/repositories/ticket-repository";
 import enrollmentRepository from "@/repositories/enrollment-repository";
+import { TicketStatus } from "@prisma/client";
 
-async function getAllTicketTypes(): Promise<TicketType[]> {
-  const result = await ticketRepository.findAllTicketsTypes();
-  return result;
+async function getTicketTypes() {
+  const ticketTypes = await ticketRepository.findTicketTypes();
+
+  if (!ticketTypes) {
+    throw notFoundError();
+  }
+  return ticketTypes;
 }
 
-async function getAllUserTickets(userId: number) {
-  const enrollmentData = await enrollmentRepository.findWithAddressByUserId(
-    userId
-  );
+async function getTicketByUserId(userId: number) {
+  const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
+  if (!enrollment) {
+    throw notFoundError();
+  }
+  const ticket = await ticketRepository.findTicketByEnrollmentId(enrollment.id);
+  if (!ticket) {
+    throw notFoundError();
+  }
 
-  if (!enrollmentData) throw notFoundError();
+  return ticket;
+}
 
-  const userTickets = await ticketRepository.findAllTicketsByUser(
-    enrollmentData.id
-  );
+async function createTicket(userId: number, ticketTypeId: number) {
+  const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
+  if (!enrollment) {
+    throw notFoundError();
+  }
 
-  if (!userTickets) throw notFoundError();
+  const ticketData = {
+    ticketTypeId,
+    enrollmentId: enrollment.id,
+    status: TicketStatus.RESERVED,
+  };
 
-  return userTickets;
+  await ticketRepository.createTicket(ticketData);
+
+  const ticket = await ticketRepository.findTicketByEnrollmentId(enrollment.id);
+
+  return ticket;
 }
 
 async function validateTicketWithHotel(userId: number) {
   const ticket = await ticketRepository.findTicketWithHotel(userId);
-  if (!ticket) throw notFoundError();
+  if (!ticket) throw unauthorizedError();
   return ticket;
 }
 
 const ticketService = {
-  getAllTicketTypes,
-  getAllUserTickets,
+  getTicketTypes,
+  getTicketByUserId,
+  createTicket,
   validateTicketWithHotel,
 };
 
