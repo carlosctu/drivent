@@ -147,7 +147,7 @@ describe("GET /hotels/:hotelId", () => {
     });
   });
   describe("when token is valid", () => {
-    it("should respond with status 200 and with hotel lists when user has a PAID ticket with hotel RESERVED", async () => {
+    it("should respond with status 200 and with hotel rooms lists when user has a PAID ticket with hotel RESERVED", async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       const enrollment = await createEnrollmentWithAddress(user);
