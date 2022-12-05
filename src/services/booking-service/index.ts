@@ -6,13 +6,13 @@ import roomRepository from "@/repositories/room-repository";
 
 async function validateRoom(roomId: number) {
   const result = await roomRepository.listRoom(roomId);
-  if (!result) throw notFoundError();
+  if (!result ) throw notFoundError();
 }
 
 async function getBooking(userId: number) {
   const result = await bookingRepository.listUserBooking(userId);
 
-  if (!result) throw notFoundError();
+  if (!result.Room ) throw notFoundError();
 
   return result;
 }

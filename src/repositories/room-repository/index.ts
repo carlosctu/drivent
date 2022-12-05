@@ -7,7 +7,7 @@ async function countAvailableVacancies(roomId: number) {
 }
 
 async function listRoom(roomId: number) {
-  return prisma.room.findFirst({
+  return prisma.room.findUnique({
     where: { id: roomId },
   });
 }
