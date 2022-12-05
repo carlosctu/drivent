@@ -19,14 +19,6 @@ async function listUserBooking(userId: number): Promise<UserBooking> {
   });
 }
 
-//async function insertBooking(data: BookingParams) {
-//  return prisma.booking.create({
-//    data: {
-//      ...data,
-//    },
-//  });
-//}
-
 async function upsertUserBooking(data: Partial<Booking>) {
   return prisma.booking.upsert({
     where: {

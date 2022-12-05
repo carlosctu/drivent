@@ -19,7 +19,7 @@ export async function createNewBooking(req: AuthenticatedRequest, res: Response)
 
   try {
     const booking = await bookingService.insertBooking(roomId, userId);
-    return res.status(httpStatus.OK).send(booking);
+    return res.status(httpStatus.OK).send({ bookingId: booking.id });
   } catch (error) {
     if (error.name === "NotFoundError") {
       return res.sendStatus(httpStatus.NOT_FOUND);

@@ -6,13 +6,19 @@ import roomRepository from "@/repositories/room-repository";
 
 async function validateRoom(roomId: number) {
   const result = await roomRepository.listRoom(roomId);
-  if (!result ) throw notFoundError();
+  if (!result) throw notFoundError();
+}
+
+async function validateRoomVacancies(roomId: number) {
+  const { capacity } = await roomRepository.listAvailableVacancies(roomId);
+
+  if (capacity <= 0) throw forbiddenError();
 }
 
 async function getBooking(userId: number) {
   const result = await bookingRepository.listUserBooking(userId);
 
-  if (!result.Room ) throw notFoundError();
+  if (!result.Room) throw notFoundError();
 
   return result;
 }
@@ -25,11 +31,13 @@ async function insertBooking(roomId: number, userId: number) {
   if (userTicket.TicketType.isRemote || userTicket.status == "RESERVED" || !userTicket.TicketType.includesHotel)
     throw forbiddenError();
 
+  await validateRoomVacancies(roomId);
+
   const result = await bookingRepository.upsertUserBooking({ roomId, userId });
 
   if (!result) throw notFoundError();
 
-  return result.id;
+  return result;
 }
 
 async function updateBooking(userId: number, id: number, roomId: number) {
@@ -39,9 +47,7 @@ async function updateBooking(userId: number, id: number, roomId: number) {
 
   if (!hasBooking) throw notFoundError();
 
-  const roomHasVacancies = await roomRepository.countAvailableVacancies(roomId);
-
-  if (roomHasVacancies <= 0) throw forbiddenError();
+  await validateRoomVacancies(roomId);
 
   const result = await bookingRepository.upsertUserBooking({ id, roomId });
 

@@ -1,8 +1,9 @@
 import { prisma } from "@/config";
 
-async function countAvailableVacancies(roomId: number) {
-  return prisma.room.count({
+async function listAvailableVacancies(roomId: number) {
+  return prisma.room.findFirst({
     where: { id: roomId },
+    select: { capacity: true },
   });
 }
 
@@ -12,6 +13,6 @@ async function listRoom(roomId: number) {
   });
 }
 
-const roomRepository = { countAvailableVacancies, listRoom };
+const roomRepository = { listAvailableVacancies, listRoom };
 
 export default roomRepository;

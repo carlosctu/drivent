@@ -181,11 +181,11 @@ describe("POST /booking", () => {
       expect(response.status).toEqual(httpStatus.FORBIDDEN);
     });
 
-    it("should respond with status a, if user TicketType not includes HOTEL", async () => {
+    it("should respond with status 200 and with a bookingId, if user has a Ticket PAID, not REMOTE and with HOTEL", async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       const enrollment = await createEnrollmentWithAddress(user);
-      const ticketType = await createTicketType(false, false);
+      const ticketType = await createTicketType(false, true);
       await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
       const hotel = await createHotel();
       const room = await createRoomWithHotelId(hotel.id);
@@ -195,7 +195,8 @@ describe("POST /booking", () => {
       };
       const response = await server.post("/booking").set("Authorization", `Bearer ${token}`).send(body);
 
-      expect(response.status).toEqual(httpStatus.FORBIDDEN);
+      expect(response.status).toEqual(httpStatus.OK);
+      expect(response.body).toEqual({ bookingId: expect.any(Number) });
     });
   });
 });
