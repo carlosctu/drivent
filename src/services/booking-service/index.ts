@@ -35,25 +35,22 @@ async function insertBooking(roomId: number, userId: number) {
 
   const result = await bookingRepository.upsertUserBooking({ roomId, userId });
 
-  if (!result) throw notFoundError();
-
   return result;
 }
 
 async function updateBooking(userId: number, id: number, roomId: number) {
   await validateRoom(roomId);
 
-  const hasBooking = await getBooking(userId);
+  const hasBooking = await bookingRepository.listUniqueBooking(id);
 
   if (!hasBooking) throw notFoundError();
+  if (hasBooking.userId !== userId) throw forbiddenError();
 
   await validateRoomVacancies(roomId);
 
-  const result = await bookingRepository.upsertUserBooking({ id, roomId });
+  const result = await bookingRepository.updateUserBooking(id, roomId);
 
-  if (!result) throw notFoundError();
-
-  return result.id;
+  return result;
 }
 
 const bookingService = {
