@@ -41,10 +41,7 @@ async function findTicketWithHotel(userId: number) {
   return prisma.ticket.findFirst({
     where: {
       status: TicketStatus.PAID,
-      AND: [
-        { TicketType: { includesHotel: true } },
-        { Enrollment: { userId: userId } },
-      ],
+      AND: [{ TicketType: { includesHotel: true } }, { Enrollment: { userId: userId } }],
     },
   });
 }
@@ -68,6 +65,13 @@ async function ticketProcessPayment(ticketId: number) {
   });
 }
 
+async function listUserTickets(userId: number) {
+  return prisma.ticket.findFirst({
+    where: { Enrollment: { userId } },
+    include: { TicketType: true },
+  });
+}
+
 export type CreateTicketParams = Omit<Ticket, "id" | "createdAt" | "updatedAt">;
 
 const ticketRepository = {
@@ -78,6 +82,7 @@ const ticketRepository = {
   findTicketWithHotel,
   findTickeWithTypeById,
   ticketProcessPayment,
+  listUserTickets
 };
 
 export default ticketRepository;
